@@ -1,0 +1,29 @@
+pipeline {
+    agent {
+        label "slave2"
+    }
+    stages {
+        stage('tomcat insatallation') {
+            steps {
+                sh 'rm -rf hello-world-war'
+                sh 'git clone https://github.com/San0705/hello-world-war.git'
+                sh 'chmod 755 ${WORKSPACE}/hello-world-war/tomcat'
+                sh '${WORKSPACE}/hello-world-war/tomcat'
+            }
+        }
+        stage('Build') {
+            steps {
+                sh 'rm -rf hello-world-war'
+                sh 'git clone https://github.com/San0705/hello-world-war.git'
+                dir('hello-world-war'){
+                sh 'mvn package'
+                }
+            }
+        }
+        stage('Deploy step') {
+             steps {
+                 sh 'sudo cp ${WORKSPACE}/hello-world-war/target/hello-world-war-1.0.0.war /var/lib/tomcat9/webapps/'       
+            }
+        }
+    }
+}
