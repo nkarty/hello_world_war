@@ -5,24 +5,24 @@ pipeline {
     stages {
         stage('tomcat insatallation') {
             steps {
-                sh 'rm -rf hello-world-war'
-                sh 'git clone https://github.com/San0705/hello-world-war.git'
-                sh 'chmod 755 ${WORKSPACE}/hello-world-war/tomcat'
-                sh '${WORKSPACE}/hello-world-war/tomcat'
+                sh 'rm -rf hello_world_war'
+                sh 'git clone https://github.com/nkarty/hello_world_war.git'
+                sh 'chmod 755 ${WORKSPACE}/hello_world_war/tomcat'
+                sh '${WORKSPACE}/hello_world_war/tomcat_install'
             }
         }
         stage('Build') {
             steps {
-                sh 'rm -rf hello-world-war'
-                sh 'git clone https://github.com/San0705/hello-world-war.git'
-                dir('hello-world-war'){
+                sh 'rm -rf hello_world_war'
+                sh 'git clone https://github.com/nkarty/hello_world_war.git'
+                dir('hello_world_war'){
                 sh 'mvn package'
                 }
             }
         }
         stage('Deploy step') {
              steps {
-                 sh 'sudo cp ${WORKSPACE}/hello-world-war/target/hello-world-war-1.0.0.war /var/lib/tomcat9/webapps/'       
+                 sh 'sudo cp ${WORKSPACE}/hello_world_war/target/hello_world_war-1.0.0.war /var/lib/tomcat9/webapps/'       
             }
         }
     }
