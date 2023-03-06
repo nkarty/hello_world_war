@@ -1,0 +1,27 @@
+pipeline {
+    agent any
+    stages {
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t jenkin_dock .'
+            }
+        }
+        stage('Push Docker Image') {
+            steps {
+                withDockerRegistry([ credentialsId: "docker-hub-creds", url:""]) {
+                    sh 'docker tag mvn_docker karty94/jenkin_dock:$BUILD_NUMBER'
+                    sh 'docker push karty94/jenkin_dock:$BUILD_NUMBER' 
+                }
+            }
+        }
+        stage('Deploy Step') {
+            steps {
+               withDockerRegistry([ credentialsId: "docker-hub-creds", url:""]) {
+                sh 'docker pull karty94/jenkin_dock:$BUILD_NUMBER'
+               }
+                sh 'docker rm -f tom_docker'
+                sh 'docker run -itd -p 8060:8080 --name tom_docker jenkin_dock'
+            }
+        }
+    }
+}
